@@ -1,46 +1,41 @@
-import axios, { AxiosError } from "axios";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
+import { CreateProduct } from "./Components/CreateProduct";
+import { ErrorMessage } from "./Components/ErrorMessage";
+import { Loader } from "./Components/Loader";
+import { Modal } from "./Components/Modal";
 import { Product } from "./Components/Product";
-//import { toys } from "./data/products";
+import { useProducts } from "./Hooks/products";
 import { IProduct } from "./models";
 
 function App() {
-  // Local State for products
-  const [toys, setToys] = useState<IProduct[]>([]);
+  // Bring Hook data with next fields
+  const { loading, error, items, addItem } = useProducts();
+  const [modal, setModal] = useState(false)
 
-  // Showing loading and error on load
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  // Fetch products on Page Load with asynchronous query
-  async function fetchProducts() {
-    try {
-      setError("");
-      setLoading(true);
-      const response = await axios.get<IProduct[]>(
-        "https://fakestoreapi.com/products?limit=5"
-      );
-      setToys(response.data);
-      setLoading(false);
-    } catch (e: unknown) {
-      const error = e as AxiosError;
-      setLoading(false);
-      setError(error.message);
-    }
+  const createHandler = (item: IProduct) => {
+    setModal(false)
+    addItem(item)
   }
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  // Iteration of toys with map method
+  // Iteration of items with map method
   return (
     <div className="container mx-auto max-w-2xl pt-5">
-      {loading && <p className="text-center">Loading...</p>}
-      {error && <p className="text-center text-red-600">{error}</p>}
-      {toys.map((toy) => (
-        <Product toy={toy} key={toy.id} />
+      {/* If loading is true then take */}
+      {loading && <Loader />}
+      {error && <ErrorMessage error={error} />}
+      {items.map((item) => (
+        <Product item={item} key={item.id} />
       ))}
+      
+      {/* Form and create product are different components 
+      to make modal universal component, onClick works onClose method */}
+      {modal && <Modal title="Create new item" onClose={() => setModal(false)}>
+        <CreateProduct onCreate={createHandler} />
+      </Modal>}
+
+      <button 
+      onClick={() => setModal(true)}
+      className="absolute bottom-5 right-5 rounded-full bg-red-700 text-white text-2xl px-4 py-2">+</button>
     </div>
   );
 }

@@ -1,5 +1,7 @@
+// TODO: Interface to get access to item data
+// id? makes 'id' field optional
 export interface IProduct {
-  id: number;
+  id?: number;
   title: string;
   price: number;
   description: string;

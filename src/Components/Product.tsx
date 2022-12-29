@@ -1,38 +1,43 @@
 import React, { useState } from "react";
 import { IProduct } from "../models";
 
-// Interface based on model
+// Interface based on model enables to connect to @items fields
 interface ProductProps {
-  toy: IProduct;
+  item: IProduct;
 }
 
-export function Product({ toy }: ProductProps) {
+// TODO: Describe item as type - { item }: ProductProps
+export function Product({ item }: ProductProps) {
   const [details, setDetails] = useState(false);
+
+  // TODO: If Details are true - then yellow - dynamic data
   const btnBgClassName = details ? "bg-yellow-400" : "bg-blue-400";
 
+  // Styling as array of static and dynamic data by class
   const btnClasses = ["py-2 px-4 mt-3 mb-3 border", btnBgClassName];
 
   return (
     <div className="border py-2 px-4 mt-2 mb-2 rounded flex flex-col items-center mb-2">
-      <img src={toy.image} className="w-1/6" alt={toy.title} />
-      {toy.title}
+      <img src={item.image} className="w-1/6" alt={item.title} />
+      {item.title}
 
-      {/* Button className changes dinamically depandent on */}
-      <p className="font-bold">{toy.price}</p>
+      {/* TODO: Button className changes dynamically dependent on */}
+      <p className="font-bold">{item.price}</p>
       <button
         className={btnClasses.join(" ")}
         onClick={() => setDetails((prev) => !prev)}
       >
-        {/* IF details is true - hide description -other way show it */}
+        {/* TODO: IF details is true - hide description -other way show it */}
         {details ? "Hide Details" : "Show Details"}
       </button>
 
-      {/* IF details is true - show description */}
+      {/* TODO: IF details is true - show description */}
       {details && (
         <div className="flex flex-col items-center">
-          <p>{toy.description}</p>
+          <p>{item.description}</p>
+        
           <p>
-            Rate: <span style={{ fontWeight: "bold" }}>{toy.rating.rate}</span>
+          Rate: <span style={{ fontWeight: "bold" }}>{item?.rating?.rate}</span>
           </p>
         </div>
       )}
